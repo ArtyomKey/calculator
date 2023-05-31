@@ -54,43 +54,34 @@
 
             <input type="text" id="input2" placeholder="Введите второе число">
 
-            <button type="button" onclick="add()">+</button>
-            <button type="button" onclick="subtract()">-</button>
-            <button type="button" onclick="multiply()">*</button>
-            <button type="button" onclick="divide()">/</button>
+            <button type="button" onclick="add()" id="install-button">+</button>
+            <button type="button" onclick="subtract()" id="install-button">-</button>
+            <button type="button" onclick="multiply()" id="install-button">*</button>
+            <button type="button" onclick="divide()" id="install-button">/</button>
 
             <input type="text" id="result" placeholder="Результат">
 
         </form>
-        <button id="install-button">Установить приложение</button>
+        <button onclick="installPWA()" id="install-button">Install PWA</button>
 
         <script>
-            let deferredPrompt;
-
-            window.addEventListener('beforeinstallprompt', (event) => { // Prevent the default dialog
-                event.preventDefault();
-                // Store the event for later use
-                var deferredPrompt = event;
-                // Show the install button
-                document.getElementById('installButton').style.display = 'block';
-            });
-
-            installButton = document.getElementById('install-button')
-            installButton.addEventListener('click', () => { // Show the install prompt
-                deferredPrompt.prompt();
-                // Wait for the user to respond to the prompt
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                    } else {
-                        console.log('User dismissed the install prompt');
-                    }
-                    // Reset the deferred prompt
-                    deferredPrompt = null;
-                    // Hide the install button
-                    document.getElementById('installButton').style.display = 'none';
-                });
-            });
+            function installPWA() { // Check if browser supports PWA installation
+                if ('beforeinstallprompt' in window) { // Get the PWA installation prompt
+                    window.addEventListener('beforeinstallprompt', (e) => { // Show the PWA installation prompt
+                        e.prompt();
+                        // Wait for user to install or cancel the installation
+                        e.userChoice.then((choiceResult) => {
+                            if (choiceResult.outcome === 'accepted') {
+                                console.log('User installed the PWA.');
+                            } else {
+                                console.log('User did not install the PWA.');
+                            }
+                        });
+                    });
+                } else {
+                    console.log('PWA installation not supported.');
+                }
+            }
         </script>
         <script>
             function add() {
